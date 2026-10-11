@@ -4,7 +4,7 @@ model_anggota = AnggotaModel()
 
 # 1. Menguji fungsi Create Anggota
 print("Menambahkan data anggota baru...")
-model_anggota.create_anggota("Bimo Prakoso Batmomolin", "Palu")
+model_anggota.create_anggota("Naruto Shimpuden", "Konoha")
 print("Data anggota berhasil disimpan!")
 
 # 2. Menguji fungsi Read Anggota
