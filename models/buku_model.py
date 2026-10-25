@@ -16,11 +16,11 @@ class BukuModel:
             return result
         return []
 
-    def create_buku(self, judul, penulis, tahun_terbit):
+    def create_buku(self, judul, pengarang, tahun_terbit):
         if self.conn:
             cursor = self.conn.cursor()
-            query = f"INSERT INTO {self.table_name} (judul, penulis, tahun_terbit) VALUES (%s, %s, %s)"
-            val = (judul, penulis, tahun_terbit)
+            query = f"INSERT INTO {self.table_name} (judul, pengarang, tahun_terbit) VALUES (%s, %s, %s)"
+            val = (judul, pengarang, tahun_terbit)
             cursor.execute(query, val)
             self.conn.commit()
             cursor.close()
@@ -28,11 +28,11 @@ class BukuModel:
         return False
 
 # === METODE BARU: UPDATE ===
-    def update_buku(self, id_buku, judul, penulis, tahun_terbit):
+    def update_buku(self, buku_id, judul, pengarang, tahun_terbit):
         if self.conn:
             cursor = self.conn.cursor()
-            query = f"UPDATE {self.table_name} SET judul=%s, penulis=%s, tahun_terbit=%s WHERE id_buku=%s"
-            val = (judul, penulis, tahun_terbit, id_buku)
+            query = f"UPDATE {self.table_name} SET judul=%s, pengarang=%s, tahun_terbit=%s WHERE buku_id=%s"
+            val = (judul, pengarang, tahun_terbit, buku_id)
             cursor.execute(query, val)
             self.conn.commit()
             cursor.close()
@@ -40,11 +40,11 @@ class BukuModel:
         return False
 
     # === METODE BARU: DELETE ===
-    def delete_buku(self, id_buku):
+    def delete_buku(self, buku_id):
         if self.conn:
             cursor = self.conn.cursor()
-            query = f"DELETE FROM {self.table_name} WHERE id_buku=%s"
-            val = (id_buku,)
+            query = f"DELETE FROM {self.table_name} WHERE buku_id=%s"
+            val = (buku_id,)
             cursor.execute(query, val)
             self.conn.commit()
             cursor.close()

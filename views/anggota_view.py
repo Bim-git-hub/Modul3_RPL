@@ -61,7 +61,6 @@ class AnggotaView(ctk.CTk):
 
         self.tabel.pack(fill="both", expand=True, padx=15, pady=10)
 
-
 # Blok eksekusi untuk menguji tampilan grafis
 if __name__ == "__main__":
     app = AnggotaView()
