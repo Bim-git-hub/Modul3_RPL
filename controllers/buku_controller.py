@@ -3,46 +3,49 @@ from models.buku_model import BukuModel
 from views.buku_view import BukuView
 
 class BukuController:
-    def __init__(self, user_role="anggota"):
-        self.user_role = user_role
-        self.model = BukuModel()
-        self.view = BukuView()
+    def __init__(self, user_role="anggota", on_logout=None):
+            self.user_role = user_role
+            self.on_logout = on_logout  # <-- Tangkap fungsi callback on_logout di sini
+            self.model = BukuModel()
+            self.view = BukuView()
+            self.selected_buku_id = None
 
-        # Menampilkan informasi role pada judul jendela aplikasi
-        self.view.title(f"Sistem Manajemen Perpustakaan - Mode: {self.user_role.upper()}")
+            # Menampilkan informasi role pada judul jendela aplikasi
+            self.view.title(f"Sistem Manajemen Perpustakaan - Mode: {self.user_role.upper()}")
 
-        # Binding tombol simpan
-        self.view.btn_simpan.configure(command=self.simpan_data)
+            # Binding tombol simpan
+            self.view.btn_simpan.configure(command=self.simpan_data)
 
-        # OTORISASI: Jika bukan admin, nonaktifkan form input dan tombol simpan
-        if self.user_role != "admin":
-            self.view.btn_simpan.configure(state="disabled", text="Akses Terkunci (Khusus Admin)")
-            self.view.entry_judul.configure(state="disabled")
-            self.view.entry_penulis.configure(state="disabled")
-            self.view.entry_tahun.configure(state="disabled")
+            # OTORISASI: Jika bukan admin, nonaktifkan form input dan tombol simpan
+            if self.user_role != "admin":
+                self.view.btn_simpan.configure(state="disabled", text="Akses Terkunci (Khusus Admin)")
+                self.view.entry_judul.configure(state="disabled")
+                self.view.entry_penulis.configure(state="disabled")
+                self.view.entry_tahun.configure(state="disabled")
 
-            self.view.btn_update.configure(state="disabled", text="Akses Terkunci (Khusus Admin)")
-            self.view.entry_judul.configure(state="disabled")
-            self.view.entry_penulis.configure(state="disabled")
-            self.view.entry_tahun.configure(state="disabled")
+                self.view.btn_update.configure(state="disabled", text="Akses Terkunci (Khusus Admin)")
+                self.view.entry_judul.configure(state="disabled")
+                self.view.entry_penulis.configure(state="disabled")
+                self.view.entry_tahun.configure(state="disabled")
 
-            self.view.btn_hapus.configure(state="disabled", text="Akses Terkunci (Khusus Admin)")
-            self.view.entry_judul.configure(state="disabled")
-            self.view.entry_penulis.configure(state="disabled")
-            self.view.entry_tahun.configure(state="disabled")
+                self.view.btn_hapus.configure(state="disabled", text="Akses Terkunci (Khusus Admin)")
+                self.view.entry_judul.configure(state="disabled")
+                self.view.entry_penulis.configure(state="disabled")
+                self.view.entry_tahun.configure(state="disabled")
 
-        self.muat_data_tabel()
+            self.muat_data_tabel()
 
-        # Binding (mengikat) tombol di View dengan fungsi di Controller
-        self.view.btn_simpan.configure(command=self.simpan_data)
-        self.view.btn_update.configure(command=self.perbarui_data)
-        self.view.btn_hapus.configure(command=self.hapus_data)
+            # Binding (mengikat) tombol di View dengan fungsi di Controller
+            self.view.btn_simpan.configure(command=self.simpan_data)
+            self.view.btn_update.configure(command=self.perbarui_data)
+            self.view.btn_hapus.configure(command=self.hapus_data)
+            self.view.btn_logout.configure(command=self.logout_sistem) # tugas modul 7
 
-        # Event ketika baris tabel diklik oleh pengguna
-        self.view.tabel.bind("<<TreeviewSelect>>", self.pilih_baris)
+            # Event ketika baris tabel diklik oleh pengguna
+            self.view.tabel.bind("<<TreeviewSelect>>", self.pilih_baris)
 
-        # Memuat data ke tabel saat aplikasi pertama kali dibuka
-        self.muat_data_tabel()
+            # Memuat data ke tabel saat aplikasi pertama kali dibuka
+            self.muat_data_tabel()
 
     def muat_data_tabel(self):
         # Mengosongkan isi tabel di View terlebih dahulu
@@ -141,6 +144,13 @@ class BukuController:
                 self.selected_buku_id = None
             else:
                 messagebox.showerror("Error", "Terjadi kesalahan saat menghapus data.")
+
+    def logout_sistem(self): # Tugas modul 6
+        konfirmasi = messagebox.askyesno("Konfirmasi Logout", "Apakah Anda yakin ingin keluar akun?")
+        if konfirmasi:
+            self.view.destroy()
+            if self.on_logout:
+                self.on_logout() # Membuka kembali halaman Login
 
     def bersihkan_form(self):
         self.view.entry_judul.delete(0, 'end')
