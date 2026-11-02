@@ -27,4 +27,16 @@ jobs:
 
       - name: 4. Menjalankan Automated Unit Testing (Pytest)
         run: |
+
+      - name: 4. Menginstal Dependensi Proyek
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: 5. Menjalankan Linter Flake8
+        run: |
+          flake8 models/ controllers/ --count --select=E9,F63,F7,F82 --show-source --statistics
+
+      - name: 6. Menjalankan Automated Unit Testing (Pytest)
+        run: |
           python -m pytest -v
